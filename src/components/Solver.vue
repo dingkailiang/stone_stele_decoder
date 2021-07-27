@@ -127,16 +127,6 @@ const units = ref(Array.from({length:3},()=>new Unit()))
 const result = ref(null)
 
 
-// debug
-// units.value.push(new Unit())
-// units.value[0].state = 2
-// units.value[1].state = 1
-// units.value[2].state = 1
-// units.value[3].state = 2
-// settings.type = "count"
-// settings.method = "neighbor_loop"
-
-
 watch(()=>settings.type,()=>units.value.forEach(u => u.state = 0))
 
 watch(()=>units.value.length,()=>{
