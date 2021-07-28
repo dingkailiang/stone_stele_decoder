@@ -13,5 +13,6 @@ shell.exec("git add .")
 shell.exec(`git commit -m "build from ${hash}"`)
 shell.exec("git push")
 
+shell.cd("..")
 shell.rm("-rf", "dist")
 shell.rm("-rf", "gh-pages")
