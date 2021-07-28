@@ -19,7 +19,7 @@
         <el-form-item :label="'机关 ' + (i + 1)">
             <el-select v-model="units[i].state">
                 <el-option 
-                    v-for="{label,value} in unit_states" 
+                    v-for="(label,value) in unit_states" 
                     :key="value" 
                     :value="value"
                     :label="label"
@@ -81,18 +81,9 @@ const num_unit_state = computed(()=> settings.type == "rotate" ? 4 : 3)
 const unit_states = computed(()=>{
     switch (settings.type) {
         case "rotate":
-            return [
-                { label : "正", value : 0 },
-                { label : "左", value : 1 },
-                { label : "背", value : 2 },
-                { label : "右", value : 3 }
-            ]
+            return ["正","左","背","右"]
         case "count":
-            return [
-                { label : "一", value : 1 },
-                { label : "二", value : 2 },
-                { label : "三", value : 0 }
-            ]
+            return ["一","二","三"]
     }
 })
 
@@ -148,8 +139,8 @@ function solve(){
     history[queue[0]] = {}
     while (queue.length){
         let current = queue.shift()
-        if (current.split("").every(v=>v==0)){
-            let cvt = repr=>repr.split("").map(i=>unit_states.value[i].label).join("")
+        if (current.split("").every((v,i,a)=>v === a[0])){
+            let cvt = repr=>repr.split("").map(i=>unit_states.value[i]).join("")
             let seq = []
             let pre_action = null
             while (current){
