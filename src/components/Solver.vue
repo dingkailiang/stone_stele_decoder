@@ -13,6 +13,20 @@
                 <el-option label="自定义" value="custom"/> 
             </el-select>
         </el-form-item>
+        <el-form-item label="目标状态">
+            <el-select 
+                v-model="settings.target"
+                placeholder="均可"
+                clearable
+            >
+                <el-option 
+                    v-for="(label,value) in unit_states" 
+                    :key="value" 
+                    :value="value"
+                    :label="label"
+                />
+            </el-select>
+        </el-form-item>
     </el-form>
     
     <el-form v-for="(u,i) in units" :key="i" inline class="unit-form">
@@ -74,7 +88,8 @@ import { computed, watch } from "@vue/runtime-core"
 
 const settings = reactive({
     type : "rotate",
-    method : "neighbor"
+    method : "neighbor",
+    target : ''
 })
 
 const num_unit_state = computed(()=> settings.type == "rotate" ? 4 : 3)
@@ -118,7 +133,10 @@ const units = ref(Array.from({length:3},()=>new Unit()))
 const result = ref(null)
 
 
-watch(()=>settings.type,()=>units.value.forEach(u => u.state = 0))
+watch(()=>settings.type,()=>{
+    units.value.forEach(u => u.state = 0)
+    settings.target = ''
+})
 
 watch(()=>units.value.length,()=>{
     units.value.forEach(u => {
@@ -136,10 +154,11 @@ watch(()=>units.value.length,()=>{
 function solve(){
     let history = {}
     let queue = [units.value.map(u=>u.state).join("")]
+    let target = settings.target.toString() || null
     history[queue[0]] = {}
     while (queue.length){
         let current = queue.shift()
-        if (current.split("").every((v,i,a)=>v === a[0])){
+        if (current.split("").every((v,i,a)=>v === (target ?? a[0]))){
             let cvt = repr=>repr.split("").map(i=>unit_states.value[i]).join("")
             let seq = []
             let pre_action = null
